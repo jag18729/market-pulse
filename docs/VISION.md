@@ -3,31 +3,27 @@
 > *"I choose a lazy person to do a hard job. Because a lazy person will find an easy way to do it."*
 > — **Bill Gates**
 
-> *"The advance of technology is based on making it fit in so that you don't really even notice it, so it's part of everyday life."*
-> — **Bill Gates**
-
 ---
 
 ## 🎯 Mission
 
-Wake up smarter than Wall Street. Every morning at 6 AM, receive a personalized market brief synthesized moments before delivery — not stale overnight compilations, but fresh intelligence pulled and analyzed in real-time.
+Wake up smarter than Wall Street. Every morning at 6 AM, receive a personalized market brief in your inbox — synthesized moments before delivery, not stale overnight content.
 
 ---
 
 ## 🌅 Core Experience
 
 ```
-5:55 AM  ──►  AI wakes, pulls fresh data
+5:55 AM  ──►  System wakes, pulls fresh data
               │
               ├─ Pre-market futures & movers
               ├─ Overnight news & earnings
               ├─ Your watchlist positions
               ├─ Triggered price alerts
-              ├─ Sentiment analysis
               │
-5:59 AM  ──►  Claude synthesizes the brief
+5:59 AM  ──►  AI synthesizes personalized brief
               │
-6:00 AM  ──►  Telegram delivers your personalized report
+6:00 AM  ──►  Email lands in your inbox
 ```
 
 **You open your eyes. Your market brief is waiting.**
@@ -42,7 +38,7 @@ Wake up smarter than Wall Street. Every morning at 6 AM, receive a personalized 
 | Same content for everyone | Personalized to YOUR watchlist |
 | Stale by delivery time | Data pulled moments before |
 | Generic market coverage | YOUR tickers, YOUR alerts |
-| Read-only newsletter | Interactive: reply to ask questions |
+| Read-only | Click to drill down on any ticker |
 
 ---
 
@@ -51,28 +47,31 @@ Wake up smarter than Wall Street. Every morning at 6 AM, receive a personalized 
 ### Frontend (stocks.vandine.us)
 ```
 React + Tailwind + Vite
-├── Landing page (sign up CTA)
-├── Dashboard
+├── Landing page (email signup CTA)
+├── Dashboard (after login)
 │   ├── Watchlist management
 │   ├── Alert configuration
-│   ├── Conviction tracker
-│   └── Newsletter archive
-├── Settings
-│   ├── Telegram connection
-│   ├── Delivery time preference
-│   └── Alert thresholds
-└── Auth (email + OAuth)
+│   ├── Brief archive
+│   └── Settings
+└── Auth (email magic link or password)
 ```
 
 ### Backend (Deno on pi1)
 ```
 Deno + Hono + PostgreSQL
-├── /api/auth/* - User management
+├── /api/auth/* - Signup, login, verify
 ├── /api/watchlist/* - Ticker management
-├── /api/alerts/* - Price/volume/news alerts
-├── /api/conviction/* - Position tracking
-├── /api/newsletter/* - Archive & preferences
+├── /api/alerts/* - Price/volume alerts
+├── /api/briefs/* - Archive & preferences
 └── /api/market/* - Real-time data proxy
+```
+
+### Email Delivery (Resend)
+```
+Resend API
+├── Transactional: Welcome, verify, password reset
+├── Marketing: Daily briefs (6 AM cron)
+└── Templates: React Email components
 ```
 
 ### Data Pipeline
@@ -81,11 +80,8 @@ Deno + Hono + PostgreSQL
 │                     DATA SOURCES                            │
 ├─────────────────────────────────────────────────────────────┤
 │  Finnhub API          │ Real-time quotes, pre-market       │
-│  Alpha Vantage        │ Historical, fundamentals           │
-│  NewsAPI / NewsData   │ Headlines, sentiment               │
-│  Reddit API           │ r/wallstreetbets, r/stocks         │
-│  Twitter/X API        │ $CASHTAG mentions (optional)       │
-│  SEC EDGAR            │ Insider trades, 13F filings        │
+│  Alpha Vantage        │ Historical data, fundamentals      │
+│  NewsAPI              │ Headlines, breaking news           │
 │  Fear & Greed Index   │ Market sentiment                   │
 └─────────────────────────────────────────────────────────────┘
                               │
@@ -93,29 +89,18 @@ Deno + Hono + PostgreSQL
 ┌─────────────────────────────────────────────────────────────┐
 │                     PROCESSING                              │
 ├─────────────────────────────────────────────────────────────┤
-│  Collector Service    │ WebSocket + REST polling           │
-│  Redis                │ Real-time cache, pub/sub           │
-│  PostgreSQL           │ User data, watchlists, history     │
-│  Vector               │ Logs → Loki                        │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│                     INTELLIGENCE                            │
-├─────────────────────────────────────────────────────────────┤
-│  OpenClaw + Claude    │ Newsletter generation              │
-│  Cron (5:55 AM)       │ Trigger morning brief              │
-│  Alert Engine         │ Price/volume/news triggers         │
-│  Sentiment Analyzer   │ News + social scoring              │
+│  Cron Job (5:55 AM)   │ Trigger brief generation           │
+│  Claude API           │ Synthesize personalized content    │
+│  PostgreSQL           │ Users, watchlists, history         │
+│  Redis                │ Rate limiting, caching             │
 └─────────────────────────────────────────────────────────────┘
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                     DELIVERY                                │
 ├─────────────────────────────────────────────────────────────┤
-│  Telegram Bot         │ Morning briefs, alerts             │
+│  Resend               │ Email delivery (transactional)     │
 │  Web Dashboard        │ Archive, settings, watchlists      │
-│  Email (optional)     │ Weekly digest                      │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -124,105 +109,129 @@ Deno + Hono + PostgreSQL
 ## 🛠️ Features
 
 ### MVP (Phase 1)
-- [ ] User signup/login (reuse GuardQuote auth)
+- [ ] Email signup with verification
 - [ ] Watchlist management (add/remove tickers)
-- [ ] Telegram bot connection
 - [ ] Morning brief generation (6 AM cron)
-- [ ] Basic price alerts
+- [ ] Email delivery via Resend
+- [ ] Brief archive in dashboard
+- [ ] Unsubscribe handling
 
 ### Phase 2
-- [ ] Conviction tracker (position size, entry price, thesis)
-- [ ] News-based alerts ("TSLA mentioned in WSJ")
-- [ ] Sentiment scoring (bullish/bearish gauge)
-- [ ] Interactive Telegram replies ("What's moving?")
+- [ ] Price alerts (above/below threshold)
+- [ ] Multiple delivery times
+- [ ] Weekly digest option
+- [ ] Referral system
 
-### Phase 3
-- [ ] Portfolio sync (Robinhood, Schwab APIs)
-- [ ] Social features (share watchlists)
-- [ ] Whale tracking (13F filings, insider trades)
-- [ ] Options flow alerts
-- [ ] Earnings calendar integration
+### Phase 3 (Monetization)
+- [ ] Free tier: 5 tickers, daily brief
+- [ ] Pro tier ($5/mo): Unlimited tickers, real-time alerts
+- [ ] API access for developers
 
 ---
 
-## 📱 Sample Morning Brief
+## 📧 Sample Morning Brief (Email)
 
 ```
-☀️ Good morning, Rafa — February 8, 2026
+Subject: ☀️ Your Market Pulse — Feb 8, 2026
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 📊 PRE-MARKET SNAPSHOT (5:59 AM PST)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-S&P 500 Futures    +0.34%  │  4,892
-Nasdaq Futures     +0.51%  │  17,234
-10Y Treasury       4.12%   │  ▼2bp
-VIX                14.2    │  -0.8
-Bitcoin            $52,340 │  +1.2%
+
+  S&P 500 Futures    +0.34%  │  4,892
+  Nasdaq Futures     +0.51%  │  17,234
+  10Y Treasury       4.12%   │  ▼2bp
+  VIX                14.2    │  -0.8
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 🎯 YOUR WATCHLIST
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-NVDA    $742.50  +2.1% pre  │ 🔥 Earnings beat!
-AMD     $183.20  +0.8% pre  │ Following NVDA
-AAPL    $189.30  -0.2% pre  │ Quiet
-TSLA    $201.40  -3.1% pre  │ ⚠️ China concerns
+
+  NVDA    $742.50  +2.1%   🔥 Earnings beat expectations
+  AMD     $183.20  +0.8%   Following NVDA higher
+  AAPL    $189.30  -0.2%   Quiet pre-market
+  TSLA    $201.40  -3.1%   ⚠️ China demand concerns
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 🚨 TRIGGERED ALERTS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✓ AMD crossed $180 target (set Jan 15)
-✓ NVDA volume spike: 3.2M pre-market
+
+  ✓ AMD crossed your $180 target (set Jan 15)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 📰 OVERNIGHT NEWS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• NVDA Q4 beats estimates, data center revenue +400% YoY
-• Fed minutes today at 2PM EST — watch for rate hints
-• Tesla pauses Berlin expansion amid demand concerns
-• Apple Vision Pro sales tracking below expectations
+
+  • NVDA Q4 crushes estimates, data center up 400% YoY
+  • Fed minutes today at 2PM — watch for rate path hints
+  • Tesla pauses Berlin expansion amid softening demand
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 🧠 AI TAKE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Strong day ahead for semis. NVDA earnings lift the sector.
-Watch Fed minutes for volatility. Your TSLA position may
-see pressure — consider your stop-loss at $195.
 
-Reply with a ticker for instant quote. 📈
+Strong day ahead for semis. NVDA earnings lifting the
+sector. Watch Fed minutes for volatility. Your TSLA
+position may see pressure.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Manage Watchlist]  [View Full Brief]  [Unsubscribe]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Market Pulse by vandine.us
 ```
 
 ---
 
 ## 🔐 Infrastructure
 
-### Reuse from GuardQuote
-- React + Tailwind frontend
+### Reuse Existing
+- React + Tailwind frontend patterns
 - Deno + Hono backend
 - PostgreSQL database
 - Cloudflare Pages + Tunnel
-- JWT auth flow
-- Admin dashboard patterns
+- Resend (already set up for GitHub alerts)
 
 ### New Components
-- Telegram bot (OpenClaw integration)
-- WebSocket server (real-time quotes)
-- Cron jobs (morning brief, alerts)
-- Redis (real-time cache)
-- External API integrations
+- Email templates (React Email)
+- Cron job for brief generation
+- Finnhub API integration
+- Claude API for synthesis
 
 ---
 
-## 📅 Timeline (Tentative)
+## 📅 Timeline
 
 | Phase | Target | Deliverables |
 |-------|--------|--------------|
-| Design | Feb 10-14 | Wireframes, DB schema, API spec |
-| MVP | Feb 15-28 | Auth, watchlists, Telegram, basic brief |
-| Polish | Mar 1-15 | Alerts, conviction tracker, UI polish |
-| Beta | Mar 15+ | Invite friends, iterate |
+| Design | Feb 10-14 | Wireframes, email templates, DB schema |
+| MVP | Feb 15-28 | Auth, watchlists, email delivery, basic brief |
+| Polish | Mar 1-15 | Alerts, archive UI, landing page |
+| Launch | Mar 15+ | Public beta, iterate on feedback |
 
 ---
 
-## 💰 Potential Monetization (Future)
-- Free tier: 5 tickers, daily brief
-- Pro tier: Unlimited tickers, real-time alerts, sentiment
-- API access for developers
+## 💰 Unit Economics (Future)
+
+| Tier | Price | Features |
+|------|-------|----------|
+| Free | $0 | 5 tickers, daily brief |
+| Pro | $5/mo | Unlimited tickers, alerts, API |
+| Team | $20/mo | Multiple portfolios, sharing |
+
+**Break-even:** ~100 Pro subscribers covers Resend + API costs
 
 ---
 
-*Last updated: 2026-02-07*
+## 🔑 API Keys Needed
+
+| Service | Purpose | Cost |
+|---------|---------|------|
+| Finnhub | Real-time quotes | Free tier (60 calls/min) |
+| Resend | Email delivery | Free tier (3k/mo), then $20/mo |
+| Anthropic | Brief synthesis | Per-token (~$0.01/brief) |
+
+---
+
+*Last updated: 2026-02-08*

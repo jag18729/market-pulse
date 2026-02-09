@@ -2,15 +2,14 @@
 
 > Wake up smarter than Wall Street.
 
-AI-powered morning market briefs delivered via Telegram at 6 AM — personalized to your watchlist, synthesized moments before delivery.
+AI-powered morning market briefs delivered to your inbox at 6 AM — personalized to your watchlist, synthesized moments before delivery.
 
 ## Features
 
-- **Personalized Briefs** — Your watchlist, your alerts, your schedule
-- **Real-Time Data** — Pulled at 5:59 AM, not stale overnight content
-- **Interactive** — Reply to ask questions about any ticker
-- **Conviction Tracker** — Track your positions and thesis
-- **Smart Alerts** — Price, volume, and news-based triggers
+- **Personalized Briefs** — Your watchlist, your schedule
+- **Fresh Data** — Pulled at 5:59 AM, not stale overnight content  
+- **Smart Alerts** — Price thresholds that notify you
+- **Zero Friction** — Sign up with email, done
 
 ## Stack
 
@@ -19,8 +18,7 @@ AI-powered morning market briefs delivered via Telegram at 6 AM — personalized
 | Frontend | React + Tailwind + Vite |
 | Backend | Deno + Hono |
 | Database | PostgreSQL |
-| Cache | Redis |
-| Delivery | Telegram Bot (OpenClaw) |
+| Email | Resend |
 | Hosting | Cloudflare Pages + Pi Cluster |
 
 ## Quick Start
@@ -43,7 +41,6 @@ market-pulse/
 ├── frontend/           # React + Tailwind
 ├── backend/            # Deno + Hono API
 ├── docs/               # Documentation
-├── scripts/            # Utility scripts
 └── .github/            # CI/CD workflows
 ```
 
@@ -52,9 +49,10 @@ market-pulse/
 ```bash
 # Backend
 DATABASE_URL=postgresql://user:pass@localhost:5432/marketpulse
-REDIS_URL=redis://localhost:6379
-FINNHUB_API_KEY=your_key
-JWT_SECRET=your_secret
+RESEND_API_KEY=re_xxxxx
+FINNHUB_API_KEY=xxxxx
+ANTHROPIC_API_KEY=xxxxx
+JWT_SECRET=xxxxx
 
 # Frontend
 VITE_API_URL=http://localhost:3003
@@ -63,13 +61,12 @@ VITE_API_URL=http://localhost:3003
 ## Roadmap
 
 - [x] Project setup
-- [ ] User auth (signup/login)
+- [ ] Email signup + verification
 - [ ] Watchlist management
-- [ ] Telegram bot connection
-- [ ] Morning brief generation
-- [ ] Price/volume alerts
-- [ ] Conviction tracker
-- [ ] News sentiment
+- [ ] Morning brief generation (6 AM cron)
+- [ ] Email delivery via Resend
+- [ ] Price alerts
+- [ ] Pro tier ($5/mo)
 
 ## License
 
