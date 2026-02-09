@@ -53,7 +53,7 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
     ports:
-      - "3003:3003"
+      - "3005:3003"
     depends_on:
       db:
         condition: service_healthy
