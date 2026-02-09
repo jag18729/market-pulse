@@ -50,7 +50,7 @@ market-pulse/
 # Backend
 DATABASE_URL=postgresql://user:pass@localhost:5432/marketpulse
 RESEND_API_KEY=re_xxxxx
-FINNHUB_API_KEY=xxxxx
+TIINGO_API_KEY=xxxxx
 ANTHROPIC_API_KEY=xxxxx
 JWT_SECRET=xxxxx
 

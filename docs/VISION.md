@@ -79,10 +79,8 @@ Resend API
 ┌─────────────────────────────────────────────────────────────┐
 │                     DATA SOURCES                            │
 ├─────────────────────────────────────────────────────────────┤
-│  Finnhub API          │ Real-time quotes, pre-market       │
-│  Alpha Vantage        │ Historical data, fundamentals      │
-│  NewsAPI              │ Headlines, breaking news           │
-│  Fear & Greed Index   │ Market sentiment                   │
+│  Tiingo API           │ Prices, news, fundamentals (all-in-one) │
+│  Fear & Greed Index   │ Market sentiment (optional)        │
 └─────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -228,7 +226,7 @@ Market Pulse by vandine.us
 
 | Service | Purpose | Cost |
 |---------|---------|------|
-| Finnhub | Real-time quotes | Free tier (60 calls/min) |
+| Tiingo | Prices, news, fundamentals | Free tier (500/day) |
 | Resend | Email delivery | Free tier (3k/mo), then $20/mo |
 | Anthropic | Brief synthesis | Per-token (~$0.01/brief) |
 
