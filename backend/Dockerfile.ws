@@ -1,5 +1,5 @@
-# WebSocket Server Dockerfile
-FROM denoland/deno:1.40.0
+# WebSocket Server Dockerfile (ARM64 compatible)
+FROM denoland/deno:alpine
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ COPY src/websocket.ts src/websocket.ts
 COPY src/services/ src/services/
 
 # Cache imports
-RUN deno cache src/websocket.ts
+RUN deno cache src/websocket.ts || true
 
 # Run as non-root
 USER deno

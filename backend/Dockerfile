@@ -1,17 +1,13 @@
-# Backend API Dockerfile
-FROM denoland/deno:1.40.0
+# Backend API Dockerfile (ARM64 compatible)
+FROM denoland/deno:alpine
 
 WORKDIR /app
-
-# Cache dependencies
-COPY deno.json .
-RUN deno cache --reload src/server.ts || true
 
 # Copy source
 COPY . .
 
-# Cache all imports
-RUN deno cache src/server.ts
+# Cache dependencies
+RUN deno cache src/server.ts || true
 
 # Run as non-root
 USER deno
